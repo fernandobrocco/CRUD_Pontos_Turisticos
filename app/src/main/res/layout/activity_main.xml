@@ -7,6 +7,7 @@
 
     <Button
         android:id="@+id/btnAdd"
+        android:layout_marginTop="60px"
         android:text="Adicionar Ponto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
