@@ -1,5 +1,3 @@
-﻿# Projeto1_Avancado
-
 Projeto destinado à matéria Tópicos Avançados em Programação para Dispositivos Móveis,
 
 Ministrada pela professora Franciele Beal, onde o objetivo do projeto é:
@@ -10,6 +8,7 @@ Desenvolver um aplicativo offline para cadastro de pontos turísticos. Entre os 
 - Utilizar a API para converter geocodigos em endereço (dado textual) para apresentar ao usuário
 - Apresentar os pontos cadastrados em um Mapa (Google Maps)
 - Ter tela de configuração para definir nível de zoom padrão, como o tipo do mapa que será apresentado (rodoviário, satélite, etc.)
+
 
 
 
