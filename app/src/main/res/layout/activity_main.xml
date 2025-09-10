@@ -14,7 +14,7 @@
 
     <Button
         android:id="@+id/btnMapa"
-        android:text="Ver no Mapa"
+        android:text="Ver no Mapa(pega o 1º da lista)"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"/>

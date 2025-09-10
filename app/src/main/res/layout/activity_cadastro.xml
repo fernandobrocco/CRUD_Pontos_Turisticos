@@ -38,6 +38,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textSize="20dp"
+            android:text="Insira sua imagem: "
+            />
+
+
         <Button
             android:id="@+id/btnSalvar"
             android:text="Salvar"

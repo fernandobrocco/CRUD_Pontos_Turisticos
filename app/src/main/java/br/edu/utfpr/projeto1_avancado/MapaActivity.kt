@@ -25,9 +25,18 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+
+        //Recupera configurações do SharedPreferences
+        val prefs = getSharedPreferences("config", MODE_PRIVATE)
+        val zoomConfig = prefs.getFloat("zoom", 15f)
+        val mapType = prefs.getInt("mapType", GoogleMap.MAP_TYPE_NORMAL)
+        mMap.mapType = mapType
+
+        // Lê pontos do banco
         val cursor: Cursor = dbHelper.readableDatabase.rawQuery(
             "SELECT nome, descricao, latitude, longitude FROM pontos", null
         )
+
         if (cursor.moveToFirst()) {
             do {
                 val nome = cursor.getString(0)
@@ -35,10 +44,20 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                 val lat = cursor.getDouble(2)
                 val lng = cursor.getDouble(3)
                 val ponto = LatLng(lat, lng)
-                mMap.addMarker(MarkerOptions().position(ponto).title(nome).snippet(desc))
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ponto, 15f))
+
+                mMap.addMarker(
+                    MarkerOptions()
+                        .position(ponto)
+                        .title(nome)
+                        .snippet(desc)
+                )
+
+                // 🔹 Centraliza no último ponto lido (mantendo seu comportamento atual)
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ponto, zoomConfig))
+
             } while (cursor.moveToNext())
         }
+
         cursor.close()
     }
 }
