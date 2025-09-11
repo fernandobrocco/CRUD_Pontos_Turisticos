@@ -3,8 +3,10 @@ package br.edu.utfpr.projeto1_avancado
 import android.content.ContentValues
 import android.database.Cursor
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
@@ -22,6 +24,13 @@ class CadastroActivity : AppCompatActivity() {
         val edtLat: EditText = findViewById(R.id.edtLat)
         val edtLng: EditText = findViewById(R.id.edtLng)
         val btnSalvar: Button = findViewById(R.id.btnSalvar)
+
+        val img1: ImageView = findViewById(R.id.img1)
+        val img2: ImageView = findViewById(R.id.img2)
+        val img3: ImageView = findViewById(R.id.img3)
+        val img4: ImageView = findViewById(R.id.img4)
+
+        var imagemResId: Int = 0
 
         pontoId = intent.getIntExtra("id", 0)
         if (pontoId != 0) {
@@ -57,5 +66,21 @@ class CadastroActivity : AppCompatActivity() {
             }
             finish()
         }
+
+        val clickListener = View.OnClickListener { v ->
+            imagemResId = when(v.id) {
+                R.id.img1 -> R.drawable.cristo
+                R.id.img2 -> R.drawable.torre
+                R.id.img3 -> R.drawable.machu_picchu
+                R.id.img4 -> R.drawable.coliseu
+                else -> 0
+            }
+            Toast.makeText(this, "Imagem selecionada", Toast.LENGTH_SHORT).show()
+        }
+        // Configurar os listeners de clique para as imagens
+        img1.setOnClickListener(clickListener)
+        img2.setOnClickListener(clickListener)
+        img3.setOnClickListener(clickListener)
+        img4.setOnClickListener(clickListener)
     }
 }

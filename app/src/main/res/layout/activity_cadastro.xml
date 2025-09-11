@@ -42,10 +42,60 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:textSize="20dp"
-            android:text="Insira sua imagem: "
-            />
+            android:textSize="18sp"
+            android:text="Escolha uma imagem:" />
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="8dp">
+
+            <ImageView
+                android:id="@+id/img1"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_weight="1"
+                android:src="@drawable/cristo"
+                android:scaleType="centerCrop"
+                android:padding="4dp"/>
+
+            <ImageView
+                android:id="@+id/img2"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_weight="1"
+                android:src="@drawable/torre"
+                android:scaleType="centerCrop"
+                android:padding="4dp"/>
+
+            <ImageView
+                android:id="@+id/img3"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_weight="1"
+                android:src="@drawable/machu_picchu"
+                android:scaleType="centerCrop"
+                android:padding="4dp"/>
+        </LinearLayout>
+
+        <!-- Linha com 1 imagem -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="8dp">
+
+            <ImageView
+                android:id="@+id/img4"
+                android:layout_width="200dp"
+                android:layout_height="150dp"
+                android:src="@drawable/coliseu"
+                android:scaleType="centerCrop"
+                android:padding="4dp"/>
+        </LinearLayout>
 
         <Button
             android:id="@+id/btnSalvar"
