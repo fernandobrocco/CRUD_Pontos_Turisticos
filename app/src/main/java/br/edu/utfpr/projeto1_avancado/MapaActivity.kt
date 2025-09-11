@@ -26,16 +26,27 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        //Recupera configurações do SharedPreferences
+        // 🔹 Recupera configurações do SharedPreferences
         val prefs = getSharedPreferences("config", MODE_PRIVATE)
         val zoomConfig = prefs.getFloat("zoom", 15f)
         val mapType = prefs.getInt("mapType", GoogleMap.MAP_TYPE_NORMAL)
         mMap.mapType = mapType
 
-        // Lê pontos do banco
-        val cursor: Cursor = dbHelper.readableDatabase.rawQuery(
-            "SELECT nome, descricao, latitude, longitude FROM pontos", null
-        )
+        // 🔹 Verifica se veio um id específico da MainActivity
+        val idSelecionado = intent.getIntExtra("id", -1)
+
+        val db = dbHelper.readableDatabase
+        val cursor: Cursor = if (idSelecionado != -1) {
+            db.rawQuery(
+                "SELECT nome, descricao, latitude, longitude FROM pontos WHERE id = ?",
+                arrayOf(idSelecionado.toString())
+            )
+        } else {
+            db.rawQuery(
+                "SELECT nome, descricao, latitude, longitude FROM pontos",
+                null
+            )
+        }
 
         if (cursor.moveToFirst()) {
             do {
@@ -52,7 +63,8 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                         .snippet(desc)
                 )
 
-                // 🔹 Centraliza no último ponto lido (mantendo seu comportamento atual)
+                // 🔹 Se for "ver no mapa" → centraliza no ponto específico
+                // 🔹 Se for lista completa → centraliza no último (igual ao seu código atual)
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ponto, zoomConfig))
 
             } while (cursor.moveToNext())

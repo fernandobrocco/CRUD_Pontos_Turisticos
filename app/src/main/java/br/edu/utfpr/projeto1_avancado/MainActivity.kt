@@ -42,14 +42,19 @@ class MainActivity : AppCompatActivity() {
             val idSelecionado = ids[position]
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Escolha uma ação")
-            builder.setItems(arrayOf("Editar", "Deletar")) { dialog, which ->
+            builder.setItems(arrayOf("Ver no mapa", "Editar", "Deletar")) { _, which ->
                 when (which) {
-                    0 -> {
+                    0 -> { // Ver no mapa
+                        val intent = Intent(this, MapaActivity::class.java)
+                        intent.putExtra("id", idSelecionado)
+                        startActivity(intent)
+                    }
+                    1 -> { // Editar
                         val intent = Intent(this, CadastroActivity::class.java)
                         intent.putExtra("id", idSelecionado)
                         startActivity(intent)
                     }
-                    1 -> {
+                    2 -> { // Deletar
                         db.delete("pontos", "id=?", arrayOf(idSelecionado.toString()))
                         Toast.makeText(this, "Ponto deletado", Toast.LENGTH_SHORT).show()
                         carregarLista()
