@@ -42,22 +42,68 @@ class MainActivity : AppCompatActivity() {
             val idSelecionado = ids[position]
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Escolha uma ação")
-            builder.setItems(arrayOf("Ver no mapa", "Editar", "Deletar")) { _, which ->
+            builder.setItems(
+                arrayOf(
+                    "Ver no mapa",
+                    "Editar",
+                    "Deletar",
+                    "Converter para endereço"
+                )
+            ) { _, which ->
                 when (which) {
                     0 -> { // Ver no mapa
                         val intent = Intent(this, MapaActivity::class.java)
                         intent.putExtra("id", idSelecionado)
                         startActivity(intent)
                     }
+
                     1 -> { // Editar
                         val intent = Intent(this, CadastroActivity::class.java)
                         intent.putExtra("id", idSelecionado)
                         startActivity(intent)
                     }
+
                     2 -> { // Deletar
                         db.delete("pontos", "id=?", arrayOf(idSelecionado.toString()))
                         Toast.makeText(this, "Ponto deletado", Toast.LENGTH_SHORT).show()
                         carregarLista()
+                    }
+
+                    3 -> { // Converter para endereço
+                        val cursor = db.rawQuery(
+                            "SELECT latitude, longitude FROM pontos WHERE id = ?",
+                            arrayOf(idSelecionado.toString())
+                        )
+                        if (cursor.moveToFirst()) {
+                            val lat = cursor.getDouble(0)
+                            val lng = cursor.getDouble(1)
+
+                            val geocoder =
+                                android.location.Geocoder(this, java.util.Locale.getDefault())
+                            try {
+                                val addresses = geocoder.getFromLocation(lat, lng, 1)
+                                if (!addresses.isNullOrEmpty()) {
+                                    val endereco = addresses[0].getAddressLine(0)
+
+                                    AlertDialog.Builder(this)
+                                        .setTitle("Endereço encontrado")
+                                        .setMessage(endereco)
+                                        .setPositiveButton("OK", null)
+                                        .show()
+                                } else {
+                                    Toast.makeText(
+                                        this,
+                                        "Endereço não encontrado",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                Toast.makeText(this, "Erro ao buscar endereço", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                        }
+                        cursor.close()
                     }
                 }
             }
