@@ -97,6 +97,12 @@
                 android:padding="4dp"/>
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/imageViewPonto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
         <Button
             android:id="@+id/btnSalvar"
             android:text="Salvar"

@@ -30,7 +30,10 @@ class CadastroActivity : AppCompatActivity() {
         val img3: ImageView = findViewById(R.id.img3)
         val img4: ImageView = findViewById(R.id.img4)
 
+        val imageView: ImageView = findViewById(R.id.imageViewPonto)
         var imagemResId: Int = 0
+
+
 
         pontoId = intent.getIntExtra("id", 0)
         if (pontoId != 0) {
@@ -48,6 +51,29 @@ class CadastroActivity : AppCompatActivity() {
             cursor.close()
         }
 
+        val clickListener = View.OnClickListener { v ->
+            imagemResId = when(v.id) {
+                R.id.img1 -> R.drawable.cristo
+                R.id.img2 -> R.drawable.torre
+                R.id.img3 -> R.drawable.machu_picchu
+                R.id.img4 -> R.drawable.coliseu
+                else -> 0
+            }
+            Toast.makeText(this, "Imagem selecionada", Toast.LENGTH_SHORT).show()
+        }
+
+        val cursor = dbHelper.readableDatabase.rawQuery("SELECT imagemPath FROM pontos WHERE id=?", arrayOf(pontoId.toString()))
+        if (cursor.moveToFirst()) {
+            val resId = cursor.getInt(0) // ID do drawable
+            imageView.setImageResource(resId)
+        }
+        cursor.close()
+        // Configurar os listeners de clique para as imagens
+        img1.setOnClickListener(clickListener)
+        img2.setOnClickListener(clickListener)
+        img3.setOnClickListener(clickListener)
+        img4.setOnClickListener(clickListener)
+
         btnSalvar.setOnClickListener {
             val values = ContentValues()
             values.put("nome", edtNome.text.toString())
@@ -55,7 +81,7 @@ class CadastroActivity : AppCompatActivity() {
             values.put("latitude", edtLat.text.toString().toDouble())
             values.put("longitude", edtLng.text.toString().toDouble())
             values.put("endereco", "")
-            values.put("imagemPath", "")
+            values.put("imagemPath", imagemResId.toString())
 
             if (pontoId == 0) {
                 dbHelper.writableDatabase.insert("pontos", null, values)
@@ -67,20 +93,6 @@ class CadastroActivity : AppCompatActivity() {
             finish()
         }
 
-        val clickListener = View.OnClickListener { v ->
-            imagemResId = when(v.id) {
-                R.id.img1 -> R.drawable.cristo
-                R.id.img2 -> R.drawable.torre
-                R.id.img3 -> R.drawable.machu_picchu
-                R.id.img4 -> R.drawable.coliseu
-                else -> 0
-            }
-            Toast.makeText(this, "Imagem selecionada", Toast.LENGTH_SHORT).show()
-        }
-        // Configurar os listeners de clique para as imagens
-        img1.setOnClickListener(clickListener)
-        img2.setOnClickListener(clickListener)
-        img3.setOnClickListener(clickListener)
-        img4.setOnClickListener(clickListener)
+
     }
 }
