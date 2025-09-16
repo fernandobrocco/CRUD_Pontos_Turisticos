@@ -15,13 +15,13 @@ class ConfigActivity : AppCompatActivity() {
         val edtZoom: EditText = findViewById(R.id.edtZoom)
         val rgMapType: RadioGroup = findViewById(R.id.rgMapType)
 
-        val prefs = getSharedPreferences("config", Context.MODE_PRIVATE)
+        val prefs = getSharedPreferences("config", Context.MODE_PRIVATE) // salvar zoom e tipo de mapa
 
         // Carregar zoom salvo
         edtZoom.setText(prefs.getFloat("zoom", 15f).toString())
 
         // Restaurar tipo de mapa salvo
-        when (prefs.getInt("mapType", 1)) { // 1 = Normal
+        when (prefs.getInt("mapType", 1)) { //1 = Normal/padrão
             1 -> rgMapType.check(R.id.rbNormal)
             2 -> rgMapType.check(R.id.rbSatelite)
             4 -> rgMapType.check(R.id.rbHibrido)
@@ -32,7 +32,7 @@ class ConfigActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnSalvar).setOnClickListener {
             val zoom = edtZoom.text.toString().toFloatOrNull() ?: 15f
 
-            // Descobre qual foi selecionado
+            // descobre qual tipo de mapa foi selecionado
             val mapType = when (rgMapType.checkedRadioButtonId) {
                 R.id.rbNormal -> 1
                 R.id.rbSatelite -> 2
@@ -40,10 +40,10 @@ class ConfigActivity : AppCompatActivity() {
                 R.id.rbTerreno -> 3
                 else -> 1
             }
-            // Salva zoom e tipo de mapa
+            // salva zoom e tipo de mapa selecionados
             prefs.edit()
                 .putFloat("zoom", zoom)
-                .putInt("mapType", mapType) // GoogleMap.MAP_TYPE_*
+                .putInt("mapType", mapType)
                 .apply()
 
             finish()

@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, ConfigActivity::class.java))
         }
 
+        // modal de seleção de ação quando clica em cima de um ponto
         listView.setOnItemClickListener { _, _, position, _ ->
             val idSelecionado = ids[position]
             val builder = AlertDialog.Builder(this)
@@ -56,20 +57,17 @@ class MainActivity : AppCompatActivity() {
                         intent.putExtra("id", idSelecionado)
                         startActivity(intent)
                     }
-
                     1 -> { // Editar
                         val intent = Intent(this, CadastroActivity::class.java)
                         intent.putExtra("id", idSelecionado)
                         startActivity(intent)
                     }
-
                     2 -> { // Deletar
                         db.delete("pontos", "id=?", arrayOf(idSelecionado.toString()))
                         Toast.makeText(this, "Ponto deletado", Toast.LENGTH_SHORT).show()
                         carregarLista()
                     }
-
-                    3 -> { // Converter para endereço
+                    3 -> { // Converter geocódigo(lat e lng) para endereço textual
                         val cursor = db.rawQuery(
                             "SELECT latitude, longitude FROM pontos WHERE id = ?",
                             arrayOf(idSelecionado.toString())
@@ -82,6 +80,7 @@ class MainActivity : AppCompatActivity() {
                                 android.location.Geocoder(this, java.util.Locale.getDefault())
                             try {
                                 val addresses = geocoder.getFromLocation(lat, lng, 1)
+                                // verifica se o endereço foi encontrado
                                 if (!addresses.isNullOrEmpty()) {
                                     val endereco = addresses[0].getAddressLine(0)
 
@@ -91,6 +90,7 @@ class MainActivity : AppCompatActivity() {
                                         .setPositiveButton("OK", null)
                                         .show()
                                 } else {
+                                    // se o endereço não foi encontrado, mostra uma mensagem de erro
                                     Toast.makeText(
                                         this,
                                         "Endereço não encontrado",
@@ -98,6 +98,7 @@ class MainActivity : AppCompatActivity() {
                                     ).show()
                                 }
                             } catch (e: Exception) {
+                                // se ocorrer um erro ao buscar o endereço, mostra uma outra mensagem de erro
                                 e.printStackTrace()
                                 Toast.makeText(this, "Erro ao buscar endereço", Toast.LENGTH_SHORT)
                                     .show()
@@ -111,11 +112,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // atualiza a lista quando a atividade é reaberta
     override fun onResume() {
         super.onResume()
         carregarLista()
     }
 
+    // carrega a lista de pontos cadastrados
     private fun carregarLista() {
         lista.clear()
         ids.clear()

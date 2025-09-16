@@ -37,7 +37,7 @@ class CadastroActivity : AppCompatActivity() {
 
         pontoId = intent.getIntExtra("id", 0)
         if (pontoId != 0) {
-            // Carregar dados do ponto para editar
+            // Carrega dados do ponto para edição
             val cursor: Cursor = dbHelper.readableDatabase.rawQuery(
                 "SELECT * FROM pontos WHERE id=?",
                 arrayOf(pontoId.toString())
@@ -51,6 +51,7 @@ class CadastroActivity : AppCompatActivity() {
             cursor.close()
         }
 
+        // Listener para selecionar a imagem
         val clickListener = View.OnClickListener { v ->
             imagemResId = when(v.id) {
                 R.id.img1 -> R.drawable.cristo
@@ -62,18 +63,20 @@ class CadastroActivity : AppCompatActivity() {
             Toast.makeText(this, "Imagem selecionada", Toast.LENGTH_SHORT).show()
         }
 
+        //carregar imagem do banco de dados
         val cursor = dbHelper.readableDatabase.rawQuery("SELECT imagemPath FROM pontos WHERE id=?", arrayOf(pontoId.toString()))
         if (cursor.moveToFirst()) {
             val resId = cursor.getInt(0) // ID do drawable
             imageView.setImageResource(resId)
         }
         cursor.close()
-        // Configurar os listeners de clique para as imagens
+        // configurar os listeners de clique para as imagens
         img1.setOnClickListener(clickListener)
         img2.setOnClickListener(clickListener)
         img3.setOnClickListener(clickListener)
         img4.setOnClickListener(clickListener)
 
+        // listener para salvar o ponto selecionado
         btnSalvar.setOnClickListener {
             val values = ContentValues()
             values.put("nome", edtNome.text.toString())
@@ -83,10 +86,12 @@ class CadastroActivity : AppCompatActivity() {
             values.put("endereco", "")
             values.put("imagemPath", imagemResId.toString())
 
+            // salvar o ponto no banco de dados
             if (pontoId == 0) {
                 dbHelper.writableDatabase.insert("pontos", null, values)
                 Toast.makeText(this, "Ponto cadastrado", Toast.LENGTH_SHORT).show()
             } else {
+                // atualiza o ponto no banco de dados
                 dbHelper.writableDatabase.update("pontos", values, "id=?", arrayOf(pontoId.toString()))
                 Toast.makeText(this, "Ponto atualizado", Toast.LENGTH_SHORT).show()
             }

@@ -12,10 +12,12 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import java.util.Locale
 
+// atividade relacionada ao mapeamento dos pontos cadastrados
 class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
     lateinit var dbHelper: DBHelper
     lateinit var mMap: GoogleMap
 
+    //criação da atividade
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mapa)
@@ -25,25 +27,26 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
     }
 
+    //carregamento do mapa
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // 🔹 Recupera configurações do SharedPreferences
-        val prefs = getSharedPreferences("config", MODE_PRIVATE)
-        val zoomConfig = prefs.getFloat("zoom", 15f)
-        val mapType = prefs.getInt("mapType", GoogleMap.MAP_TYPE_NORMAL)
+        val prefs = getSharedPreferences("config", MODE_PRIVATE) // pega preferencias na configActivity
+        val zoomConfig = prefs.getFloat("zoom", 15f) // pega o zoom do mapa na configActivity
+        val mapType = prefs.getInt("mapType", GoogleMap.MAP_TYPE_NORMAL) // define o tipo de mapa escolhido na configActivity
         mMap.mapType = mapType
 
-        // 🔹 Verifica se veio um id específico da MainActivity
         val idSelecionado = intent.getIntExtra("id", -1)
 
         val db = dbHelper.readableDatabase
         val cursor: Cursor = if (idSelecionado != -1) {
+            //seleciona um ponto especifico
             db.rawQuery(
                 "SELECT nome, descricao, latitude, longitude FROM pontos WHERE id = ?",
                 arrayOf(idSelecionado.toString())
             )
         } else {
+            //seleciona todos os pontos
             db.rawQuery(
                 "SELECT nome, descricao, latitude, longitude FROM pontos",
                 null
@@ -60,7 +63,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                 val lng = cursor.getDouble(3)
                 val ponto = LatLng(lat, lng)
 
-                // 🔹 Tenta converter lat/lng para endereço
+                // Tenta converter latitude e longitude para endereço textual
                 try {
                     val addresses = geocoder.getFromLocation(lat, lng, 1)
                     if (!addresses.isNullOrEmpty()) {
@@ -71,6 +74,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                     e.printStackTrace()
                 }
 
+                // adiciona marcador no mapa
                 mMap.addMarker(
                     MarkerOptions()
                         .position(ponto)
@@ -78,6 +82,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                         .snippet(desc)
                 )
 
+                // move a câmera para o ponto do mapa
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ponto, zoomConfig))
 
             } while (cursor.moveToNext())
