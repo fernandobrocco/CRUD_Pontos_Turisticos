@@ -1,43 +1,44 @@
 package br.edu.utfpr.projeto1_avancado
 
 import android.content.ContentValues
+import android.content.Intent
 import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import java.io.File
+import java.io.FileOutputStream
 
 class CadastroActivity : AppCompatActivity() {
-    lateinit var dbHelper: DBHelper
-    var pontoId: Int = 0
+
+    private lateinit var dbHelper: DBHelper
+    private var pontoId: Int = 0
+    private var imagemUri: Uri? = null
+    private var imagemPathInterna: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cadastro)
 
         dbHelper = DBHelper(this)
+
         val edtNome: EditText = findViewById(R.id.edtNome)
         val edtDesc: EditText = findViewById(R.id.edtDesc)
         val edtLat: EditText = findViewById(R.id.edtLat)
         val edtLng: EditText = findViewById(R.id.edtLng)
+        val btnImportar: Button = findViewById(R.id.btnImportar)
         val btnSalvar: Button = findViewById(R.id.btnSalvar)
-
-        val img1: ImageView = findViewById(R.id.img1)
-        val img2: ImageView = findViewById(R.id.img2)
-        val img3: ImageView = findViewById(R.id.img3)
-        val img4: ImageView = findViewById(R.id.img4)
-
-        val imageView: ImageView = findViewById(R.id.imageViewPonto)
-        var imagemResId: Int = 0
-
-
+        val img: ImageView = findViewById(R.id.img)
 
         pontoId = intent.getIntExtra("id", 0)
+
+        // Restaurar ponto existente
         if (pontoId != 0) {
-            // Carregar dados do ponto para editar
             val cursor: Cursor = dbHelper.readableDatabase.rawQuery(
                 "SELECT * FROM pontos WHERE id=?",
                 arrayOf(pontoId.toString())
@@ -47,41 +48,80 @@ class CadastroActivity : AppCompatActivity() {
                 edtDesc.setText(cursor.getString(cursor.getColumnIndexOrThrow("descricao")))
                 edtLat.setText(cursor.getDouble(cursor.getColumnIndexOrThrow("latitude")).toString())
                 edtLng.setText(cursor.getDouble(cursor.getColumnIndexOrThrow("longitude")).toString())
+                imagemPathInterna = cursor.getString(cursor.getColumnIndexOrThrow("imagemPath"))
+
+                if (!imagemPathInterna.isNullOrEmpty()) {
+                    val file = File(imagemPathInterna!!)
+                    if (file.exists()) {
+                        img.setImageURI(Uri.fromFile(file))
+                    }
+                }
             }
             cursor.close()
         }
 
-        val clickListener = View.OnClickListener { v ->
-            imagemResId = when(v.id) {
-                R.id.img1 -> R.drawable.cristo
-                R.id.img2 -> R.drawable.torre
-                R.id.img3 -> R.drawable.machu_picchu
-                R.id.img4 -> R.drawable.coliseu
-                else -> 0
+        // Launcher para escolher imagem da galeria
+        val pickImageLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val selectedImageUri = result.data?.data
+                if (selectedImageUri != null) {
+                    // Copia a imagem para armazenamento interno
+                    val nomeArquivo = "imagem_ponto_${System.currentTimeMillis()}.jpg"
+                    val file = File(filesDir, nomeArquivo)
+                    contentResolver.openInputStream(selectedImageUri)?.use { input ->
+                        FileOutputStream(file).use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+                    imagemPathInterna = file.absolutePath
+                    img.setImageURI(Uri.fromFile(file))
+                }
             }
-            Toast.makeText(this, "Imagem selecionada", Toast.LENGTH_SHORT).show()
         }
 
-        val cursor = dbHelper.readableDatabase.rawQuery("SELECT imagemPath FROM pontos WHERE id=?", arrayOf(pontoId.toString()))
-        if (cursor.moveToFirst()) {
-            val resId = cursor.getInt(0) // ID do drawable
-            imageView.setImageResource(resId)
+        fun validaCampoVazio(campo: EditText, mensagem: String) {
+            if (campo.text.toString().isEmpty()) {
+                Toast.makeText(this, mensagem, Toast.LENGTH_SHORT).show()
+                return
+            }
         }
-        cursor.close()
-        // Configurar os listeners de clique para as imagens
-        img1.setOnClickListener(clickListener)
-        img2.setOnClickListener(clickListener)
-        img3.setOnClickListener(clickListener)
-        img4.setOnClickListener(clickListener)
 
+        // Botão importar abre galeria
+        btnImportar.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            pickImageLauncher.launch(intent)
+        }
+
+        // Botão salvar
         btnSalvar.setOnClickListener {
-            val values = ContentValues()
-            values.put("nome", edtNome.text.toString())
-            values.put("descricao", edtDesc.text.toString())
-            values.put("latitude", edtLat.text.toString().toDouble())
-            values.put("longitude", edtLng.text.toString().toDouble())
-            values.put("endereco", "")
-            values.put("imagemPath", imagemResId.toString())
+
+            //converte para string e retira os espaços
+            val nome = edtNome.text.toString().trim()
+            val desc = edtDesc.text.toString().trim()
+            val latStr = edtLat.text.toString().trim()
+            val lngStr = edtLng.text.toString().trim()
+
+            //valida se os campos estao vazios e para a função
+            if (nome.isEmpty() || desc.isEmpty() || latStr.isEmpty() || lngStr.isEmpty()) {
+                Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            //converte para double e se nao for possivel retorna 0.0
+            val lat = latStr.toDoubleOrNull() ?: 0.0
+            val lng = lngStr.toDoubleOrNull() ?: 0.0
+
+
+            val values = ContentValues().apply {
+                put("nome", nome)
+                put("descricao", desc)
+                put("latitude", lat)
+                put("longitude", lng)
+                put("endereco", "")
+                put("imagemPath", imagemPathInterna ?: "")
+            }
 
             if (pontoId == 0) {
                 dbHelper.writableDatabase.insert("pontos", null, values)
@@ -90,9 +130,8 @@ class CadastroActivity : AppCompatActivity() {
                 dbHelper.writableDatabase.update("pontos", values, "id=?", arrayOf(pontoId.toString()))
                 Toast.makeText(this, "Ponto atualizado", Toast.LENGTH_SHORT).show()
             }
+
             finish()
         }
-
-
     }
 }

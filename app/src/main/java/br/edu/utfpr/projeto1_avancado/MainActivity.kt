@@ -119,14 +119,21 @@ class MainActivity : AppCompatActivity() {
     private fun carregarLista() {
         lista.clear()
         ids.clear()
-        val cursor: Cursor = db.rawQuery("SELECT id, nome FROM pontos", null)
+        val cursor: Cursor = db.rawQuery("SELECT id, nome, latitude, longitude FROM pontos", null)
         if (cursor.moveToFirst()) {
             do {
-                ids.add(cursor.getInt(0))
-                lista.add(cursor.getString(1))
+                val id = cursor.getInt(0)
+                val nome = cursor.getString(1)
+                val lat = cursor.getDouble(2)
+                val lng = cursor.getDouble(3)
+
+                ids.add(id)
+                lista.add("ID: $id\nNome: $nome\nLat: $lat\nLng: $lng") // concatena em uma string
             } while (cursor.moveToNext())
         }
         cursor.close()
+
         listView.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, lista)
+
     }
 }

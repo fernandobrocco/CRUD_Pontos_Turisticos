@@ -3,7 +3,14 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginTop="30dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="Zoom Padrão"/>
 
     <EditText
         android:id="@+id/edtZoom"
@@ -19,37 +26,10 @@
         android:textSize="20dp"
         android:text="Tipo de Mapa"/>
 
-    <RadioGroup
-        android:id="@+id/rgMapType"
+    <Spinner
+        android:id="@+id/spMapType"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical">
-
-    <RadioButton
-        android:id="@+id/rbNormal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Normal"/>
-
-    <RadioButton
-        android:id="@+id/rbSatelite"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Satélite"/>
-
-    <RadioButton
-        android:id="@+id/rbHibrido"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Híbrido"/>
-
-    <RadioButton
-        android:id="@+id/rbTerreno"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Terreno"/>
-    </RadioGroup>
+        android:layout_height="wrap_content"/>
 
     <Button
         android:id="@+id/btnSalvar"
