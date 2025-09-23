@@ -54,7 +54,7 @@ class ConfigActivity : AppCompatActivity() {
             // Salva zoom e tipo de mapa
             prefs.edit()
                 .putFloat("zoom", zoom)
-                .putInt("mapType", mapType) // GoogleMap.MAP_TYPE_*
+                .putInt("mapType", mapType)
                 .apply()
 
             finish()

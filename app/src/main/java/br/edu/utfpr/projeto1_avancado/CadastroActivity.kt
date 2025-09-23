@@ -43,6 +43,7 @@ class CadastroActivity : AppCompatActivity() {
                 "SELECT * FROM pontos WHERE id=?",
                 arrayOf(pontoId.toString())
             )
+            // Verifica se o ponto existe
             if (cursor.moveToFirst()) {
                 edtNome.setText(cursor.getString(cursor.getColumnIndexOrThrow("nome")))
                 edtDesc.setText(cursor.getString(cursor.getColumnIndexOrThrow("descricao")))
@@ -50,6 +51,7 @@ class CadastroActivity : AppCompatActivity() {
                 edtLng.setText(cursor.getDouble(cursor.getColumnIndexOrThrow("longitude")).toString())
                 imagemPathInterna = cursor.getString(cursor.getColumnIndexOrThrow("imagemPath"))
 
+                // Carrega imagem do armazenamento interno
                 if (!imagemPathInterna.isNullOrEmpty()) {
                     val file = File(imagemPathInterna!!)
                     if (file.exists()) {
@@ -81,12 +83,13 @@ class CadastroActivity : AppCompatActivity() {
             }
         }
 
+        /* // Valida se o campo esta vazio e para a função
         fun validaCampoVazio(campo: EditText, mensagem: String) {
             if (campo.text.toString().isEmpty()) {
                 Toast.makeText(this, mensagem, Toast.LENGTH_SHORT).show()
                 return
             }
-        }
+        }*/
 
         // Botão importar abre galeria
         btnImportar.setOnClickListener {
@@ -113,7 +116,7 @@ class CadastroActivity : AppCompatActivity() {
             val lat = latStr.toDoubleOrNull() ?: 0.0
             val lng = lngStr.toDoubleOrNull() ?: 0.0
 
-
+            // Salva ponto no banco de dados
             val values = ContentValues().apply {
                 put("nome", nome)
                 put("descricao", desc)
@@ -122,7 +125,7 @@ class CadastroActivity : AppCompatActivity() {
                 put("endereco", "")
                 put("imagemPath", imagemPathInterna ?: "")
             }
-
+            // Verifica se é um novo ponto(cadastra) ou um ponto existente(atualiza)
             if (pontoId == 0) {
                 dbHelper.writableDatabase.insert("pontos", null, values)
                 Toast.makeText(this, "Ponto cadastrado", Toast.LENGTH_SHORT).show()

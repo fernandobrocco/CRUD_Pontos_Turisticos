@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<android.widget.Button>(R.id.btnConfig).setOnClickListener {
             startActivity(Intent(this, ConfigActivity::class.java))
         }
-
+        // AlertDialog quando clica no item da lista de pontos
         listView.setOnItemClickListener { _, _, position, _ ->
             val idSelecionado = ids[position]
             val builder = AlertDialog.Builder(this)
@@ -116,6 +116,7 @@ class MainActivity : AppCompatActivity() {
         carregarLista()
     }
 
+    //carrega lista de pontos do banco de dados e adiciona na lista
     private fun carregarLista() {
         lista.clear()
         ids.clear()
@@ -128,7 +129,7 @@ class MainActivity : AppCompatActivity() {
                 val lng = cursor.getDouble(3)
 
                 ids.add(id)
-                lista.add("ID: $id\nNome: $nome\nLat: $lat\nLng: $lng") // concatena em uma string
+                lista.add("\nNome: $nome\nLat: $lat\nLng: $lng") // concatena em uma string
             } while (cursor.moveToNext())
         }
         cursor.close()
