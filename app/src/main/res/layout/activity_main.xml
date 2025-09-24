@@ -8,24 +8,27 @@
 
     <Button
         android:id="@+id/btnAdd"
-        android:layout_marginTop="60px"
-        android:text="Adicionar Ponto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60px"
+        android:backgroundTint="#4CAF50"
+        android:text="Adicionar Ponto" />
 
     <Button
         android:id="@+id/btnMapa"
-        android:text="Ver no Mapa (Último ponto registrado)"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#4CAF50"
+        android:text="Ver no Mapa (Último ponto registrado)" />
 
     <Button
         android:id="@+id/btnConfig"
-        android:text="Configurações"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#3F51B5"
+        android:text="Configurações" />
 
     <ListView
         android:id="@+id/listView"
