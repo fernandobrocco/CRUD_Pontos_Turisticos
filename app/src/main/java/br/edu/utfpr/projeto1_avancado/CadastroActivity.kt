@@ -39,6 +39,7 @@ class CadastroActivity : AppCompatActivity() {
 
         // Restaurar ponto existente
         if (pontoId != 0) {
+            // Carrega dados do ponto para edição
             val cursor: Cursor = dbHelper.readableDatabase.rawQuery(
                 "SELECT * FROM pontos WHERE id=?",
                 arrayOf(pontoId.toString())
@@ -130,6 +131,7 @@ class CadastroActivity : AppCompatActivity() {
                 dbHelper.writableDatabase.insert("pontos", null, values)
                 Toast.makeText(this, "Ponto cadastrado", Toast.LENGTH_SHORT).show()
             } else {
+                // atualiza o ponto no banco de dados
                 dbHelper.writableDatabase.update("pontos", values, "id=?", arrayOf(pontoId.toString()))
                 Toast.makeText(this, "Ponto atualizado", Toast.LENGTH_SHORT).show()
             }

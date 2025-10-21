@@ -51,7 +51,7 @@ class ConfigActivity : AppCompatActivity() {
                 3 -> 3 // Terreno
                 else -> 1
             }
-            // Salva zoom e tipo de mapa
+            // salva zoom e tipo de mapa selecionados
             prefs.edit()
                 .putFloat("zoom", zoom)
                 .putInt("mapType", mapType)
