@@ -37,8 +37,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<android.widget.Button>(R.id.btnConfig).setOnClickListener {
             startActivity(Intent(this, ConfigActivity::class.java))
         }
-
-        // modal de seleção de ação quando clica em cima de um ponto
+        // AlertDialog quando clica no item da lista de pontos
         listView.setOnItemClickListener { _, _, position, _ ->
             val idSelecionado = ids[position]
             val builder = AlertDialog.Builder(this)
@@ -118,18 +117,25 @@ class MainActivity : AppCompatActivity() {
         carregarLista()
     }
 
-    // carrega a lista de pontos cadastrados
+    //carrega lista de pontos do banco de dados e adiciona na lista
     private fun carregarLista() {
         lista.clear()
         ids.clear()
-        val cursor: Cursor = db.rawQuery("SELECT id, nome FROM pontos", null)
+        val cursor: Cursor = db.rawQuery("SELECT id, nome, latitude, longitude FROM pontos", null)
         if (cursor.moveToFirst()) {
             do {
-                ids.add(cursor.getInt(0))
-                lista.add(cursor.getString(1))
+                val id = cursor.getInt(0)
+                val nome = cursor.getString(1)
+                val lat = cursor.getDouble(2)
+                val lng = cursor.getDouble(3)
+
+                ids.add(id)
+                lista.add("\nNome: $nome\nLat: $lat\nLng: $lng") // concatena em uma string
             } while (cursor.moveToNext())
         }
         cursor.close()
+
         listView.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, lista)
+
     }
 }

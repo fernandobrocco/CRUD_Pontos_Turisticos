@@ -31,11 +31,13 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        val prefs = getSharedPreferences("config", MODE_PRIVATE) // pega preferencias na configActivity
-        val zoomConfig = prefs.getFloat("zoom", 15f) // pega o zoom do mapa na configActivity
-        val mapType = prefs.getInt("mapType", GoogleMap.MAP_TYPE_NORMAL) // define o tipo de mapa escolhido na configActivity
+        // Recupera configurações do SharedPreferences
+        val prefs = getSharedPreferences("config", MODE_PRIVATE)
+        val zoomConfig = prefs.getFloat("zoom", 15f)
+        val mapType = prefs.getInt("mapType", GoogleMap.MAP_TYPE_NORMAL)
         mMap.mapType = mapType
 
+        // Verifica se veio um id específico da MainActivity
         val idSelecionado = intent.getIntExtra("id", -1)
 
         val db = dbHelper.readableDatabase
@@ -63,7 +65,7 @@ class MapaActivity : AppCompatActivity(), OnMapReadyCallback {
                 val lng = cursor.getDouble(3)
                 val ponto = LatLng(lat, lng)
 
-                // Tenta converter latitude e longitude para endereço textual
+                //Tenta converter latitude/longitude para endereço
                 try {
                     val addresses = geocoder.getFromLocation(lat, lng, 1)
                     if (!addresses.isNullOrEmpty()) {

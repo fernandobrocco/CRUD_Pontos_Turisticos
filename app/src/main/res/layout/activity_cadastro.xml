@@ -7,7 +7,9 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp">
+
 
         <EditText
             android:id="@+id/edtNome"
@@ -43,72 +45,29 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:textSize="18sp"
-            android:text="Escolha uma imagem:" />
+            android:text="Importe uma Imagem:" />
 
-        <LinearLayout
-            android:orientation="horizontal"
+        <Button
+            android:id="@+id/btnImportar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="8dp">
-
-            <ImageView
-                android:id="@+id/img1"
-                android:layout_width="0dp"
-                android:layout_height="150dp"
-                android:layout_weight="1"
-                android:src="@drawable/cristo"
-                android:scaleType="centerCrop"
-                android:padding="4dp"/>
-
-            <ImageView
-                android:id="@+id/img2"
-                android:layout_width="0dp"
-                android:layout_height="150dp"
-                android:layout_weight="1"
-                android:src="@drawable/torre"
-                android:scaleType="centerCrop"
-                android:padding="4dp"/>
-
-            <ImageView
-                android:id="@+id/img3"
-                android:layout_width="0dp"
-                android:layout_height="150dp"
-                android:layout_weight="1"
-                android:src="@drawable/machu_picchu"
-                android:scaleType="centerCrop"
-                android:padding="4dp"/>
-        </LinearLayout>
-
-        <!-- Linha com 1 imagem -->
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="8dp">
-
-            <ImageView
-                android:id="@+id/img4"
-                android:layout_width="200dp"
-                android:layout_height="150dp"
-                android:src="@drawable/coliseu"
-                android:scaleType="centerCrop"
-                android:padding="4dp"/>
-        </LinearLayout>
+            android:layout_marginTop="10dp"
+            android:backgroundTint="#4CAF50"
+            android:text="Selecionar Imagem" />
 
         <ImageView
-            android:id="@+id/imageViewPonto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
+            android:id="@+id/img"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center" />
 
         <Button
             android:id="@+id/btnSalvar"
-            android:text="Salvar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#4CAF50"
+            android:text="Salvar" />
 
     </LinearLayout>
 </ScrollView>

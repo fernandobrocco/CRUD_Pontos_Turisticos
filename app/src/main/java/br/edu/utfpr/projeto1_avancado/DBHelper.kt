@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper
 
 class DBHelper(context: Context) : SQLiteOpenHelper(context, "pontos.db", null, 1) {
 
-    // cria a base de dados
+    // Cria o banco de dados
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
             "CREATE TABLE pontos (" +
@@ -20,7 +20,7 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, "pontos.db", null, 
         )
     }
 
-    // atualiza a base de dados
+    // Atualiza o banco de dados
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("DROP TABLE IF EXISTS pontos")
         onCreate(db)
